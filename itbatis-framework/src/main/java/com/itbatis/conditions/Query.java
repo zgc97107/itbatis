@@ -7,7 +7,6 @@ import java.util.List;
 /**
  * @author zgc
  * @since 2020/7/3
- * 查询参数方法封装
  */
 public interface Query<Children,R> {
      /**

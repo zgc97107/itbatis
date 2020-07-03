@@ -8,6 +8,7 @@ import java.lang.annotation.Target;
 /**
  * @author zgc
  * @since 2020/7/2
+ * 用于指定字段名
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

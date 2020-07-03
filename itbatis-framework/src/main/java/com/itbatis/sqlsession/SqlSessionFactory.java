@@ -35,6 +35,9 @@ public class SqlSessionFactory {
         this.executor = executor;
     }
 
+    /**
+     * 根据@select注解创建MappedStatement对象
+     */
     @PostConstruct
     private void loadMapperInfo() {
         List<Class<?>> classes = LoadClass.getClasses(mapperLocation);

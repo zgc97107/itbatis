@@ -7,6 +7,7 @@ import java.util.Collection;
 /**
  * @author zgc
  * @since 2020/7/1
+ * mapped代理对象
  */
 public class MappedProxy implements InvocationHandler {
 
@@ -22,7 +23,7 @@ public class MappedProxy implements InvocationHandler {
         String statement = method.getDeclaringClass().getName() + "." + method.getName();
         if (Collection.class.isAssignableFrom(returnType)) {
             return sqlSession.selectList(statement, args);
-        }else {
+        } else {
             return sqlSession.selectOne(statement, args);
         }
     }

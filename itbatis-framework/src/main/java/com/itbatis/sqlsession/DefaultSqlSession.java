@@ -3,7 +3,6 @@ package com.itbatis.sqlsession;
 import com.itbatis.config.Configuration;
 import com.itbatis.config.MappedStatement;
 import com.itbatis.executor.Executor;
-import com.itbatis.wrapper.QueryWrapper;
 
 import java.lang.reflect.Proxy;
 import java.util.List;
@@ -11,6 +10,8 @@ import java.util.List;
 /**
  * @author zgc
  * @since 2020/7/1
+ * 初始化MappedStatement
+ * 创建mapper接口代理
  */
 public class DefaultSqlSession implements SqlSession {
 
@@ -41,6 +42,13 @@ public class DefaultSqlSession implements SqlSession {
         return executor.query(mappedStatement, params);
     }
 
+    /**
+     * 创建mapper接口代理
+     *
+     * @param mapperType
+     * @param <T>
+     * @return
+     */
     @Override
     public <T> T getMapper(Class<T> mapperType) {
         MappedProxy proxy = new MappedProxy(this);
