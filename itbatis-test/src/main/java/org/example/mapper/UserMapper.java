@@ -4,6 +4,7 @@ import com.itbatis.annotation.Select;
 import org.example.bean.User;
 
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -19,4 +20,7 @@ public interface UserMapper {
 
     @Select("select * from user where password = ?")
     List<User> selectUserByPassword(String password);
+
+    @Select("select * from user where id = ?")
+    List<Map> selectMapById(Long id);
 }

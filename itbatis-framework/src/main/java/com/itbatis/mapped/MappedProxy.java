@@ -1,4 +1,7 @@
-package com.itbatis.sqlsession;
+package com.itbatis.mapped;
+
+import com.itbatis.sqlsession.SqlSession;
+import com.itbatis.utils.SpringApplicationHolder;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -13,8 +16,8 @@ public class MappedProxy implements InvocationHandler {
 
     private SqlSession sqlSession;
 
-    public MappedProxy(SqlSession sqlSession) {
-        this.sqlSession = sqlSession;
+    public MappedProxy() {
+        this.sqlSession = SpringApplicationHolder.applicationContext.getBean(SqlSession.class);
     }
 
     @Override

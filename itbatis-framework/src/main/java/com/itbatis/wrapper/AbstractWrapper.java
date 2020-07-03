@@ -30,12 +30,9 @@ public abstract class AbstractWrapper<Children,R> implements Condition<Children,
 
     protected Executor executor;
 
-    protected void init() {
-        where.clear();
-        having.clear();
-        groupBy.clear();
-        orderBy.clear();
-        andOr.clear();
+    protected void init(Class<R> rClass) {
+        tableName = ParameterUtil.getTableName(rClass);
+        resultType = rClass.getName();
     }
 
     protected Children addCondition(SFunction<?, ?> sFunction, String value, SqlKeyWord keyWord) {

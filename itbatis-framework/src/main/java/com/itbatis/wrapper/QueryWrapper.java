@@ -24,24 +24,20 @@ public class QueryWrapper<R> extends AbstractWrapper<QueryWrapper<R>,R> implemen
     final String SELECT = "SELECT ";
     final String FROM = " FROM ";
 
-    private String tableName = null;
-
     public QueryWrapper() {
         executor = SpringApplicationHolder.applicationContext.getBean(Executor.class);
     }
 
     @Override
     public QueryWrapper<R> select(Class<R> rClass) {
-        tableName = ParameterUtil.getTableName(rClass);
-        resultType = rClass.getName();
+        super.init(rClass);
         select = "*";
         return this;
     }
 
     @Override
     public QueryWrapper<R> select(Class<R> rClass, SFunction<R,?>... functions) {
-        tableName = ParameterUtil.getTableName(rClass);
-        resultType = rClass.getName();
+        super.init(rClass);
         select = Arrays.stream(functions)
                 .map(ParameterUtil::getFieldName)
                 .collect(Collectors.joining(" ,"));

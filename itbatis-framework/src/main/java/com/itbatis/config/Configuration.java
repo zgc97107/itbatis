@@ -22,7 +22,7 @@ public class Configuration {
     @Value("${datasource.password}")
     private String password;
 
-    private Map<String, MappedStatement> statementMap = new HashMap<>();
+    private static Map<String, MappedStatement> statementMap = new HashMap<>();
 
     public String getDriver() {
         return driver;
@@ -56,11 +56,11 @@ public class Configuration {
         this.password = password;
     }
 
-    public Map<String, MappedStatement> getStatementMap() {
+    public static Map<String, MappedStatement> getStatementMap() {
         return statementMap;
     }
 
-    public void setStatementMap(Map<String, MappedStatement> statementMap) {
-        this.statementMap = statementMap;
+    public static void setStatementMap(Map<String, MappedStatement> statementMap) {
+        Configuration.statementMap = statementMap;
     }
 }
