@@ -1,5 +1,8 @@
 package com.itbatis.config;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,12 +10,17 @@ import java.util.Map;
  * @author zgc
  * @since 2020/7/1
  */
+@Component
 public class Configuration {
 
+    @Value("${datasource.driver}")
     private String driver;
+    @Value("${datasource.url}")
     private String url;
-    private String userName;
-    private String passWord;
+    @Value("${datasource.username}")
+    private String username;
+    @Value("${datasource.password}")
+    private String password;
 
     private Map<String, MappedStatement> statementMap = new HashMap<>();
 
@@ -32,20 +40,20 @@ public class Configuration {
         this.url = url;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getPassWord() {
-        return passWord;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPassWord(String passWord) {
-        this.passWord = passWord;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Map<String, MappedStatement> getStatementMap() {

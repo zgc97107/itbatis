@@ -3,9 +3,14 @@ package com.itbatis.sqlsession;
 import com.itbatis.annotation.Select;
 import com.itbatis.config.Configuration;
 import com.itbatis.config.MappedStatement;
-import com.itbatis.executor.DefaultExecutor;
+import com.itbatis.executor.Executor;
 import com.itbatis.utils.LoadClass;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -14,37 +19,43 @@ import java.util.Objects;
  * @author zgc
  * @since 2020/7/1
  */
+@Component
 public class SqlSessionFactory {
 
+    private Configuration configuration;
+
+    @Value("${it-batis.mapper-location}")
     private String mapperLocation;
 
-    private Configuration configuration = new Configuration();
+    private Executor executor;
 
-    public SqlSessionFactory(String driver, String url, String username, String password, String mapperLocation) {
-        this.mapperLocation = mapperLocation;
-        configuration.setDriver(driver);
-        configuration.setUrl(url);
-        configuration.setUserName(username);
-        configuration.setPassWord(password);
-        loadMapperInfo();
+    @Autowired
+    public SqlSessionFactory(Configuration configuration, Executor executor) {
+        this.configuration = configuration;
+        this.executor = executor;
     }
 
+    @PostConstruct
     private void loadMapperInfo() {
         List<Class<?>> classes = LoadClass.getClasses(mapperLocation);
         //将方法转为MappedStatement
         classes.stream()
+                //获取所有方法
                 .map(aClass -> aClass.getDeclaredMethods())
                 .flatMap(methods -> Arrays.stream(methods))
                 .map(method -> {
                     String id = method.getName();
                     String typeName = method.getGenericReturnType().getTypeName();
+
                     if (typeName.indexOf("<") != -1) {
                         typeName = typeName.substring(typeName.indexOf("<") + 1, typeName.indexOf(">"));
                     }
+
                     Select select = method.getAnnotation(Select.class);
                     if (select == null) {
                         return null;
                     }
+
                     String sql = select.value();
                     String namespace = method.getDeclaringClass().getName();
                     String sourceId = namespace + "." + id;
@@ -54,7 +65,8 @@ public class SqlSessionFactory {
                 .forEach(statement -> configuration.getStatementMap().put(statement.getSourceId(), statement));
     }
 
-    public SqlSession openSqlSession() {
-        return new DefaultSqlSession(configuration, new DefaultExecutor(configuration));
+    @Bean
+    public SqlSession sqlSession() {
+        return new DefaultSqlSession(configuration, executor);
     }
 }

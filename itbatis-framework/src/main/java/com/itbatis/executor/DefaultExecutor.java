@@ -4,6 +4,8 @@ import com.itbatis.config.Configuration;
 import com.itbatis.config.Connections;
 import com.itbatis.config.MappedStatement;
 import com.itbatis.utils.ParameterUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -17,10 +19,12 @@ import java.util.List;
  * @author zgc
  * @since 2020/7/1
  */
+@Component
 public class DefaultExecutor implements Executor {
 
     private Configuration configuration;
 
+    @Autowired
     public DefaultExecutor(Configuration configuration) {
         this.configuration = configuration;
     }

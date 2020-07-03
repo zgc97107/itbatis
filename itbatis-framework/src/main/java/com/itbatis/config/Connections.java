@@ -14,7 +14,7 @@ public class Connections {
         try {
             //加载驱动
             Class.forName(configuration.getDriver());
-            connection = DriverManager.getConnection(configuration.getUrl(), configuration.getUserName(), configuration.getPassWord());
+            connection = DriverManager.getConnection(configuration.getUrl(), configuration.getUsername(), configuration.getPassword());
         } catch (Exception e) {
             e.printStackTrace();
         }

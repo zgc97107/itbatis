@@ -1,7 +1,5 @@
 package com.itbatis.sqlsession;
 
-import com.itbatis.wrapper.QueryWrapper;
-
 import java.util.List;
 
 /**
@@ -14,6 +12,4 @@ public interface SqlSession {
     <T> List<T> selectList(String statement, Object... params);
 
     <T> T getMapper(Class<T> type);
-
-    <T> QueryWrapper<T> getWrapper();
 }

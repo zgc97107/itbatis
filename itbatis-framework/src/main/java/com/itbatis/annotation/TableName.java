@@ -7,10 +7,10 @@ import java.lang.annotation.Target;
 
 /**
  * @author zgc
- * @since 2020/7/2
+ * @since 2020/7/3
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface TableField {
+public @interface TableName {
     String value();
 }

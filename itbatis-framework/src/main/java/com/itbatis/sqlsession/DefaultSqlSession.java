@@ -46,9 +46,4 @@ public class DefaultSqlSession implements SqlSession {
         MappedProxy proxy = new MappedProxy(this);
         return (T) Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class[]{mapperType}, proxy);
     }
-
-    @Override
-    public <T> QueryWrapper<T> getWrapper() {
-        return new QueryWrapper<T>(executor);
-    }
 }

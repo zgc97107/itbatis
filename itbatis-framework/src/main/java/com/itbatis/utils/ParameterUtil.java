@@ -2,6 +2,7 @@ package com.itbatis.utils;
 
 import com.itbatis.SFunction;
 import com.itbatis.annotation.TableField;
+import com.itbatis.annotation.TableName;
 
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Field;
@@ -15,6 +16,26 @@ import java.util.regex.Pattern;
  * @since 2020/7/1
  */
 public class ParameterUtil {
+
+    /**
+     * 根据Class名获取tableName
+     * 默认为类名首字母小写后转下划线
+     * 也可以通过@TableName指定
+     *
+     * @param clazz
+     */
+    public static String getTableName(Class<?> clazz) {
+        TableName annotation = clazz.getAnnotation(TableName.class);
+        if (annotation != null) {
+            return annotation.value();
+        }
+        return getTableName(clazz.getSimpleName());
+    }
+
+    public static String getTableName(String className) {
+        return ParameterUtil.humpToLine(ParameterUtil.lowerFirst(className));
+    }
+
     private static Pattern linePattern = Pattern.compile("_(\\w)");
 
     /**
@@ -35,6 +56,7 @@ public class ParameterUtil {
 
     /**
      * 驼峰转下划线
+     *
      * @param str
      * @return
      */
@@ -49,12 +71,13 @@ public class ParameterUtil {
     }
 
     /**
-     * 从function中取出filed名字
+     * 从function中取出filed名
+     *
      * @param function
      * @param <T>
      * @return
      */
-    public static <T> String getName(SFunction<T, ?> function) {
+    public static <T> String getFieldName(SFunction<T, ?> function) {
         // 从function取出序列化方法
         Method writeReplaceMethod;
         try {
@@ -95,6 +118,7 @@ public class ParameterUtil {
 
     /**
      * 从function中取出Class名
+     *
      * @param function
      * @param <T>
      * @return
@@ -119,6 +143,11 @@ public class ParameterUtil {
         }
         writeReplaceMethod.setAccessible(isAccessible);
         return serializedLambda.getImplClass().replace("/", ".");
+    }
+
+    public static String lowerFirst(String value) {
+        return value.replaceFirst(value.charAt(0) + "",
+                Character.toLowerCase(value.charAt(0)) + "");
     }
 
 }
