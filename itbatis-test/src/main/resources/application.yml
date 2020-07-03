@@ -1,0 +1,7 @@
+it-batis:
+  mapper-location: org.example.mapper
+datasource:
+  driver:  com.mysql.jdbc.Driver
+  url: jdbc:mysql://localhost:3306/test
+  username: root
+  password: zhao19971107A
