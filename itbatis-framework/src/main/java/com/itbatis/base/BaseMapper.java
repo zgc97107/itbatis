@@ -8,7 +8,11 @@ import java.util.List;
  */
 public interface BaseMapper<T> {
 
-    T selectOne();
+    T selectOne(T entity);
 
-    List<T> selectList();
+    List<T> selectList(T entity);
+
+    int updateById(T entity);
+
+    int save(T entity);
 }

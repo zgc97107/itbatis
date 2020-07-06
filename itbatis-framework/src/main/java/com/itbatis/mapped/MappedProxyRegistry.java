@@ -4,8 +4,8 @@ import com.itbatis.annotation.Select;
 import com.itbatis.annotation.Update;
 import com.itbatis.enums.SqlKeyWord;
 import com.itbatis.utils.Configuration;
-import com.itbatis.utils.MappedStatement;
 import com.itbatis.utils.LoadClass;
+import com.itbatis.utils.MappedStatement;
 import com.itbatis.utils.ParameterUtil;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Proxy;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author zgc
@@ -46,6 +47,7 @@ public class MappedProxyRegistry implements BeanDefinitionRegistryPostProcessor,
 
     /**
      * 注册mapper代理对象
+     *
      * @param beanDefinitionRegistry
      */
     private void registryMapperProxy(BeanDefinitionRegistry beanDefinitionRegistry) {
@@ -62,47 +64,54 @@ public class MappedProxyRegistry implements BeanDefinitionRegistryPostProcessor,
     }
 
     /**
-     * 根据@select注解创建MappedStatement对象
+     * 创建MappedStatement对象
      */
     private void loadMapperInfo() {
         List<Class<?>> classes = LoadClass.getClasses(mapperLocation);
+        List<Class<?>> superClasses = classes.stream().map(Class::getInterfaces)
+                .filter(Objects::nonNull)
+                .flatMap(Arrays::stream)
+                .collect(Collectors.toList());
+        classes.addAll(superClasses);
         //将方法转为MappedStatement
         classes.stream()
                 //获取所有方法
-                .map(aClass -> aClass.getDeclaredMethods())
-                .flatMap(methods -> Arrays.stream(methods))
+                .map(Class::getDeclaredMethods)
+                .flatMap(Arrays::stream)
                 .map(method -> {
                     String id = method.getName();
                     String typeName = method.getGenericReturnType().getTypeName();
-
-                    if (typeName.indexOf("<") != -1) {
+                    if (typeName.contains("<")) {
                         typeName = typeName.substring(typeName.indexOf("<") + 1, typeName.indexOf(">"));
-                        typeName = typeName.equals("java.util.Map") ? "java.util.HashMap" : typeName;
+                        typeName = "java.util.Map".equals(typeName) ? "java.util.HashMap" : typeName;
+                    }
+                    Class<?> mapperClass = method.getDeclaringClass();
+                    String namespace = mapperClass.getName();
+                    String sourceId = namespace + "." + id;
+                    //处理baseMapper方法
+                    if (MappedProxy.BASE_METHODS.contains(method.getName())) {
+                        String sql = method.getName();
+                        mapperInterfaces.add(mapperClass);
+                        return new MappedStatement(namespace, sourceId, null, typeName, sql);
                     }
 
                     Select select = method.getAnnotation(Select.class);
                     if (select != null) {
                         String sql = select.value();
-                        Class<?> mapperClass = method.getDeclaringClass();
                         mapperInterfaces.add(mapperClass);
-                        String namespace = mapperClass.getName();
-                        String sourceId = namespace + "." + id;
                         return new MappedStatement(namespace, sourceId, SqlKeyWord.SELECT, typeName, sql);
                     }
                     Update update = method.getAnnotation(Update.class);
                     if (update != null) {
                         String sql = update.value();
-                        Class<?> mapperClass = method.getDeclaringClass();
                         mapperInterfaces.add(mapperClass);
-                        String namespace = mapperClass.getName();
-                        String sourceId = namespace + "." + id;
                         return new MappedStatement(namespace, sourceId, SqlKeyWord.UPDATE, typeName, sql);
                     }
                     return null;
                 })
                 .filter(Objects::nonNull)
                 .forEach(statement -> Configuration.getStatementMap().put(statement.getSourceId(), statement));
-        //将bean创建方法封装
+        //将bean创建方法封装，并放入map中
         mapperInterfaces.forEach(key -> MappedProxyFactory.mappedCache.put(key, () -> {
             MappedProxy proxy = new MappedProxy();
             return Proxy.newProxyInstance(this.getClass().getClassLoader(),

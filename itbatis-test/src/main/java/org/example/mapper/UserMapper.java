@@ -2,6 +2,7 @@ package org.example.mapper;
 
 import com.itbatis.annotation.Select;
 import com.itbatis.annotation.Update;
+import com.itbatis.base.BaseMapper;
 import org.example.bean.User;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.Map;
  * @author zgc
  * @since 2020/7/1
  */
-public interface UserMapper {
+public interface UserMapper extends BaseMapper<User> {
     @Select("select * from user where id = ?")
     User selectUserById(Long id);
 

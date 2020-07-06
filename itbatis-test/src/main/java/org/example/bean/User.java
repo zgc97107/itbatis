@@ -1,5 +1,6 @@
 package org.example.bean;
 
+import com.itbatis.annotation.TableId;
 import org.example.mapper.UserMapper;
 
 import java.lang.reflect.Method;
@@ -10,6 +11,7 @@ import java.lang.reflect.Type;
  * @since 2020/7/1
  */
 public class User {
+    @TableId
     private Long id;
     private String username;
     private String password;

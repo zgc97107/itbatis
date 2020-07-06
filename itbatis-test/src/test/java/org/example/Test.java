@@ -22,15 +22,20 @@ public class Test {
 
     @org.junit.Test
     public void testMapper() throws NoSuchMethodException, ClassNotFoundException {
-        User user = mapper.selectUserById(1L);
+//        User user = mapper.selectUserById(1L);
 //        System.out.println(user);
 //        user = mapper.selectUserByIdAndUsername(1L, "test");
 //        List<User> userList = mapper.selectUserByPassword("123456");
 //        System.out.println(userList);
 //        List<Map> map = mapper.selectMapById(1L);
 //        System.out.println(map);
-        int result = mapper.updateUserById("updateTest", "123", "123");
-        System.out.println(result);
+//        int result = mapper.updateUserById("updateTest", "123", "123");
+        User entity = new User();
+        entity.setUsername("insert test");
+        entity.setPassword("123");
+        entity.setPhoneNumber("123");
+        System.out.println(mapper.save(entity));
+//        System.out.println(mapper.selectList(entity));
     }
 
     @org.junit.Test
