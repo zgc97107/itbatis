@@ -1,4 +1,4 @@
-package com.itbatis.config;
+package com.itbatis.utils;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -6,7 +6,6 @@ import java.sql.DriverManager;
 /**
  * @author zgc
  * @since 2020/7/1
- * 连接类，后续接入连接器
  */
 public class Connections {
 

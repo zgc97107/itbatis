@@ -1,5 +1,7 @@
 package com.itbatis.sqlsession;
 
+import com.itbatis.utils.MappedStatement;
+
 import java.util.List;
 
 /**
@@ -7,9 +9,11 @@ import java.util.List;
  * @since 2020/7/1
  */
 public interface SqlSession {
-    <T> T selectOne(String statement, Object... params);
+    <T> T selectOne(MappedStatement statement, Object... params);
 
-    <T> List<T> selectList(String statement, Object... params);
+    <T> List<T> selectList(MappedStatement statement, Object... params);
+
+    int update(MappedStatement statement,Object... params);
 
     <T> T getMapper(Class<T> type);
 }

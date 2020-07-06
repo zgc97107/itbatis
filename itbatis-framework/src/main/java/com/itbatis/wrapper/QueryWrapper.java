@@ -15,63 +15,34 @@ import java.util.stream.Collectors;
  * @author zgc
  * @since 2020/7/2
  */
-public class QueryWrapper<R> extends AbstractWrapper<QueryWrapper<R>,R> implements Query<QueryWrapper<R>, R> {
+public class QueryWrapper<R> extends AbstractWrapper<QueryWrapper<R>, R> implements Query<QueryWrapper<R>, R> {
 
     private String select;
-
-    final String WHERE = " WHERE ";
-    final String AND = " AND ";
-    final String SELECT = "SELECT ";
-    final String FROM = " FROM ";
 
     public QueryWrapper() {
         executor = SpringApplicationHolder.applicationContext.getBean(Executor.class);
     }
 
     @Override
+    protected void init(Class<R> rClass) {
+        super.tableName = ParameterUtil.getTableName(rClass);
+        super.resultType = rClass.getName();
+    }
+
+    @Override
     public QueryWrapper<R> select(Class<R> rClass) {
-        super.init(rClass);
+        init(rClass);
         select = "*";
         return this;
     }
 
     @Override
-    public QueryWrapper<R> select(Class<R> rClass, SFunction<R,?>... functions) {
-        super.init(rClass);
+    public QueryWrapper<R> select(Class<R> rClass, SFunction<R, ?>... functions) {
+        init(rClass);
         select = Arrays.stream(functions)
                 .map(ParameterUtil::getFieldName)
                 .collect(Collectors.joining(" ,"));
         return this;
-    }
-
-    @Override
-    public QueryWrapper<R> eq(SFunction<R,?> function, String value) {
-        return addCondition(function, value, SqlKeyWord.EQ);
-    }
-
-    @Override
-    public QueryWrapper<R> ne(SFunction<R,?> function, String value) {
-        return addCondition(function, value, SqlKeyWord.NE);
-    }
-
-    @Override
-    public QueryWrapper<R> gt(SFunction<R,?> function, String value) {
-        return addCondition(function, value, SqlKeyWord.GT);
-    }
-
-    @Override
-    public QueryWrapper<R> ge(SFunction<R,?> function, String value) {
-        return addCondition(function, value, SqlKeyWord.GE);
-    }
-
-    @Override
-    public QueryWrapper<R> lt(SFunction<R,?> function, String value) {
-        return addCondition(function, value, SqlKeyWord.LT);
-    }
-
-    @Override
-    public QueryWrapper<R> le(SFunction<R,?> function, String value) {
-        return addCondition(function, value, SqlKeyWord.LE);
     }
 
     @Override
@@ -86,16 +57,15 @@ public class QueryWrapper<R> extends AbstractWrapper<QueryWrapper<R>,R> implemen
 
     @Override
     protected String createSql() {
-        StringBuilder sqlBuilder = new StringBuilder(SELECT);
+        StringBuilder sqlBuilder = new StringBuilder(SqlKeyWord.SELECT.value());
         String selectConditions = "*";
         if (select != null && !select.isEmpty()) {
             selectConditions = String.join(" ,", select);
         }
-        sqlBuilder.append(selectConditions).append(FROM).append(tableName).append(WHERE);
-        if (where.size() != 0) {
-            String conditions = String.join(AND, where);
-            sqlBuilder.append(conditions);
-        }
+        sqlBuilder.append(selectConditions)
+                .append(SqlKeyWord.FROM.value())
+                .append(tableName)
+                .append(super.createSql());
         return sqlBuilder.toString();
     }
 }

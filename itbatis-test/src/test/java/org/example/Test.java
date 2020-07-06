@@ -1,6 +1,7 @@
 package org.example;
 
-import com.itbatis.wrapper.QueryWrapper;
+import com.itbatis.wrapper.UpdateWrapper;
+import org.example.bean.Student;
 import org.example.bean.User;
 import org.example.mapper.UserMapper;
 import org.junit.runner.RunWith;
@@ -21,15 +22,31 @@ public class Test {
 
     @org.junit.Test
     public void testMapper() throws NoSuchMethodException, ClassNotFoundException {
-        System.out.println(mapper.selectUserById(1L));
-        System.out.println(mapper.selectUserByIdAndUsername(1L,"test"));
-        System.out.println(mapper.selectUserByPassword("123456"));
-        System.out.println(mapper.selectMapById(1L));
+        User user = mapper.selectUserById(1L);
+//        System.out.println(user);
+//        user = mapper.selectUserByIdAndUsername(1L, "test");
+//        List<User> userList = mapper.selectUserByPassword("123456");
+//        System.out.println(userList);
+//        List<Map> map = mapper.selectMapById(1L);
+//        System.out.println(map);
+        int result = mapper.updateUserById("updateTest", "123", "123");
+        System.out.println(result);
     }
 
     @org.junit.Test
     public void testWrapper() throws NoSuchMethodException, ClassNotFoundException {
-        QueryWrapper<User> wrapper = new QueryWrapper<>();
-        System.out.println(wrapper.select(User.class,User::getId,User::getUsername).gt(User::getId, "1").list());
+//        QueryWrapper<User> wrapper = new QueryWrapper<>();
+//        List<User> userList = wrapper.select(User.class, User::getId, User::getPhoneNumber, User::getPassword)
+//                .gt(User::getPhoneNumber, "123456")
+//                .list();
+//        System.out.println(userList);
+//        wrapper = new QueryWrapper<>();
+//        User user = wrapper.select(User.class).eq(User::getId, "1").one();
+//        System.out.println(user);
+//
+//        QueryWrapper<Student> studentWrapper = new QueryWrapper<>();
+//        System.out.println(studentWrapper.select(Student.class).eq(Student::getId, "1").one());
+        int update = new UpdateWrapper<Student>().update(Student.class).set(Student::getCardNum,"12312321").set(Student::getName, "update").eq(Student::getId, "1").execute();
+        System.out.println(update);
     }
 }

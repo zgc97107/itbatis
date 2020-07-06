@@ -1,8 +1,10 @@
 package com.itbatis.mapped;
 
 import com.itbatis.annotation.Select;
-import com.itbatis.config.Configuration;
-import com.itbatis.config.MappedStatement;
+import com.itbatis.annotation.Update;
+import com.itbatis.enums.SqlKeyWord;
+import com.itbatis.utils.Configuration;
+import com.itbatis.utils.MappedStatement;
 import com.itbatis.utils.LoadClass;
 import com.itbatis.utils.ParameterUtil;
 import org.springframework.beans.BeansException;
@@ -77,17 +79,26 @@ public class MappedProxyRegistry implements BeanDefinitionRegistryPostProcessor,
                         typeName = typeName.substring(typeName.indexOf("<") + 1, typeName.indexOf(">"));
                         typeName = typeName.equals("java.util.Map") ? "java.util.HashMap" : typeName;
                     }
-                    Select select = method.getAnnotation(Select.class);
-                    if (select == null) {
-                        return null;
-                    }
 
-                    String sql = select.value();
-                    Class<?> mapperClass = method.getDeclaringClass();
-                    mapperInterfaces.add(mapperClass);
-                    String namespace = mapperClass.getName();
-                    String sourceId = namespace + "." + id;
-                    return new MappedStatement(namespace, sourceId, typeName, sql);
+                    Select select = method.getAnnotation(Select.class);
+                    if (select != null) {
+                        String sql = select.value();
+                        Class<?> mapperClass = method.getDeclaringClass();
+                        mapperInterfaces.add(mapperClass);
+                        String namespace = mapperClass.getName();
+                        String sourceId = namespace + "." + id;
+                        return new MappedStatement(namespace, sourceId, SqlKeyWord.SELECT, typeName, sql);
+                    }
+                    Update update = method.getAnnotation(Update.class);
+                    if (update != null) {
+                        String sql = update.value();
+                        Class<?> mapperClass = method.getDeclaringClass();
+                        mapperInterfaces.add(mapperClass);
+                        String namespace = mapperClass.getName();
+                        String sourceId = namespace + "." + id;
+                        return new MappedStatement(namespace, sourceId, SqlKeyWord.UPDATE, typeName, sql);
+                    }
+                    return null;
                 })
                 .filter(Objects::nonNull)
                 .forEach(statement -> Configuration.getStatementMap().put(statement.getSourceId(), statement));

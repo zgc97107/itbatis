@@ -1,4 +1,6 @@
-package com.itbatis.config;
+package com.itbatis.utils;
+
+import com.itbatis.enums.SqlKeyWord;
 
 /**
  * @author zgc
@@ -8,6 +10,7 @@ public class MappedStatement {
 
     private String namespace;
     private String sourceId;
+    private SqlKeyWord selectType;
     private String resultType;
     private String sql;
 
@@ -15,11 +18,20 @@ public class MappedStatement {
 
     }
 
-    public MappedStatement(String namespace,String sourceId,String resultType,String sql){
+    public MappedStatement(String namespace, String sourceId, SqlKeyWord selectType, String resultType, String sql){
         this.namespace = namespace;
         this.sourceId = sourceId;
+        this.selectType = selectType;
         this.resultType = resultType;
         this.sql = sql;
+    }
+
+    public SqlKeyWord getSelectType() {
+        return selectType;
+    }
+
+    public void setSelectType(SqlKeyWord selectType) {
+        this.selectType = selectType;
     }
 
     public String getNamespace() {

@@ -2,7 +2,7 @@ package com.itbatis.wrapper;
 
 import com.itbatis.SFunction;
 import com.itbatis.conditions.Condition;
-import com.itbatis.config.MappedStatement;
+import com.itbatis.utils.MappedStatement;
 import com.itbatis.enums.SqlKeyWord;
 import com.itbatis.executor.Executor;
 import com.itbatis.utils.ParameterUtil;
@@ -14,7 +14,7 @@ import java.util.List;
  * @author zgc
  * @since 2020/7/2
  */
-public abstract class AbstractWrapper<Children,R> implements Condition<Children,R> {
+public abstract class AbstractWrapper<Children, R> implements Condition<Children, R> {
 
     protected final List<String> where = new ArrayList<>();
     protected final List<String> having = new ArrayList<>();
@@ -30,9 +30,36 @@ public abstract class AbstractWrapper<Children,R> implements Condition<Children,
 
     protected Executor executor;
 
-    protected void init(Class<R> rClass) {
-        tableName = ParameterUtil.getTableName(rClass);
-        resultType = rClass.getName();
+    protected abstract void init(Class<R> rClass);
+
+    @Override
+    public Children eq(SFunction<R, ?> function, String value) {
+        return addCondition(function, value, SqlKeyWord.EQ);
+    }
+
+    @Override
+    public Children ne(SFunction<R, ?> function, String value) {
+        return addCondition(function, value, SqlKeyWord.NE);
+    }
+
+    @Override
+    public Children gt(SFunction<R, ?> function, String value) {
+        return addCondition(function, value, SqlKeyWord.GT);
+    }
+
+    @Override
+    public Children ge(SFunction<R, ?> function, String value) {
+        return addCondition(function, value, SqlKeyWord.GE);
+    }
+
+    @Override
+    public Children lt(SFunction<R, ?> function, String value) {
+        return addCondition(function, value, SqlKeyWord.LT);
+    }
+
+    @Override
+    public Children le(SFunction<R, ?> function, String value) {
+        return addCondition(function, value, SqlKeyWord.LE);
     }
 
     protected Children addCondition(SFunction<?, ?> sFunction, String value, SqlKeyWord keyWord) {
@@ -50,6 +77,12 @@ public abstract class AbstractWrapper<Children,R> implements Condition<Children,
         return mappedStatement;
     }
 
-    protected abstract String createSql();
+    protected String createSql() {
+        if (where.size() != 0) {
+            return SqlKeyWord.WHERE.value() +
+                    String.join(SqlKeyWord.AND.value(), where);
+        }
+        return "";
+    }
 
 }

@@ -1,6 +1,6 @@
 package com.itbatis.sqlsession;
 
-import com.itbatis.config.Configuration;
+import com.itbatis.utils.Configuration;
 import com.itbatis.executor.Executor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

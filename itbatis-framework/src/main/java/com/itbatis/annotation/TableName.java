@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  * @since 2020/7/3
  * 用于指定类名
  */
-@Target({ElementType.METHOD})
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TableName {
     String value();

@@ -1,6 +1,6 @@
 package com.itbatis.executor;
 
-import com.itbatis.config.MappedStatement;
+import com.itbatis.utils.MappedStatement;
 
 import java.util.List;
 
@@ -10,4 +10,6 @@ import java.util.List;
  */
 public interface Executor {
     <T> List<T> query(MappedStatement statement,Object[] params);
+
+    int update(MappedStatement statement, Object[] params);
 }

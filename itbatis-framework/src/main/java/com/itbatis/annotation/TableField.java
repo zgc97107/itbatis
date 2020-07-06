@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  * @since 2020/7/2
  * 用于指定字段名
  */
-@Target({ElementType.METHOD})
+@Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TableField {
     String value();

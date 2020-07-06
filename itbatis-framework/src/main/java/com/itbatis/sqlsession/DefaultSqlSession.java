@@ -1,7 +1,7 @@
 package com.itbatis.sqlsession;
 
-import com.itbatis.config.Configuration;
-import com.itbatis.config.MappedStatement;
+import com.itbatis.utils.Configuration;
+import com.itbatis.utils.MappedStatement;
 import com.itbatis.executor.Executor;
 import com.itbatis.mapped.MappedProxy;
 
@@ -25,7 +25,7 @@ public class DefaultSqlSession implements SqlSession {
     }
 
     @Override
-    public <T> T selectOne(String statement, Object... params) {
+    public <T> T selectOne(MappedStatement statement, Object... params) {
         List<T> results = selectList(statement, params);
         if (results == null || results.size() == 0) {
             return null;
@@ -38,9 +38,13 @@ public class DefaultSqlSession implements SqlSession {
     }
 
     @Override
-    public <U> List<U> selectList(String statement, Object... params) {
-        MappedStatement mappedStatement = Configuration.getStatementMap().get(statement);
-        return executor.query(mappedStatement, params);
+    public <U> List<U> selectList(MappedStatement statement, Object... params) {
+        return executor.query(statement, params);
+    }
+
+    @Override
+    public int update(MappedStatement statement, Object... params) {
+        return executor.update(statement, params);
     }
 
     /**

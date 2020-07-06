@@ -1,6 +1,9 @@
 package com.itbatis.mapped;
 
+import com.itbatis.enums.SqlKeyWord;
 import com.itbatis.sqlsession.SqlSession;
+import com.itbatis.utils.Configuration;
+import com.itbatis.utils.MappedStatement;
 import com.itbatis.utils.SpringApplicationHolder;
 
 import java.lang.reflect.InvocationHandler;
@@ -24,10 +27,16 @@ public class MappedProxy implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Class<?> returnType = method.getReturnType();
         String statement = method.getDeclaringClass().getName() + "." + method.getName();
-        if (Collection.class.isAssignableFrom(returnType)) {
-            return sqlSession.selectList(statement, args);
+        MappedStatement mappedStatement = Configuration.getStatementMap().get(statement);
+        // update语句
+        if (mappedStatement.getSelectType().equals(SqlKeyWord.UPDATE)) {
+            return sqlSession.update(mappedStatement, args);
+        // select语句，返回多条查询结果
+        } else if (Collection.class.isAssignableFrom(returnType)) {
+            return sqlSession.selectList(mappedStatement, args);
+        // select语句，返回单条查询结果
         } else {
-            return sqlSession.selectOne(statement, args);
+            return sqlSession.selectOne(mappedStatement, args);
         }
     }
 }

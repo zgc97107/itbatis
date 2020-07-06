@@ -5,6 +5,6 @@ package com.itbatis.mapped;
  * @since 2020/7/3
  * 用于封装mapper创建方法
  */
-public interface MappedProxyBuilder<R> {
+public interface MappedProxyCreator<R> {
     R builder();
 }

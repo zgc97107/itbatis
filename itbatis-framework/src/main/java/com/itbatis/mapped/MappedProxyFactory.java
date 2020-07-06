@@ -17,7 +17,7 @@ public class MappedProxyFactory<T> implements FactoryBean<T> {
 
     private SqlSession sqlSession;
 
-    public static Map<Class<?>, MappedProxyBuilder<?>> mappedCache = new HashMap<>();
+    public static Map<Class<?>, MappedProxyCreator<?>> mappedCache = new HashMap<>();
 
     /**
      * spring将通过此方法创建对象

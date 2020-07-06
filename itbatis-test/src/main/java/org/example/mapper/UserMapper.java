@@ -1,6 +1,7 @@
 package org.example.mapper;
 
 import com.itbatis.annotation.Select;
+import com.itbatis.annotation.Update;
 import org.example.bean.User;
 
 import java.util.List;
@@ -16,11 +17,14 @@ public interface UserMapper {
     User selectUserById(Long id);
 
     @Select("select * from user where id = ? and username = ?")
-    User selectUserByIdAndUsername(Long id,String username);
+    User selectUserByIdAndUsername(Long id, String username);
 
     @Select("select * from user where password = ?")
     List<User> selectUserByPassword(String password);
 
     @Select("select * from user where id = ?")
     List<Map> selectMapById(Long id);
+
+    @Update("insert into user(username,password,phone_number) values(?,?,?)")
+    int updateUserById(String username, String password, String phoneNum);
 }

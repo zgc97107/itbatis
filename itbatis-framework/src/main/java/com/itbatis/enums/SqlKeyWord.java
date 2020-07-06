@@ -6,7 +6,12 @@ package com.itbatis.enums;
  */
 public enum SqlKeyWord {
 
+    SELECT("SELECT "),
+    UPDATE("UPDATE "),
+    FROM(" FROM "),
+    SET(" SET "),
     AND(" AND "),
+    WHERE(" WHERE "),
     OR(" OR "),
     IN(" IN "),
     NOT(" NOT "),

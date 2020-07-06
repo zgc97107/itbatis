@@ -1,8 +1,8 @@
 package com.itbatis.executor;
 
-import com.itbatis.config.Configuration;
-import com.itbatis.config.Connections;
-import com.itbatis.config.MappedStatement;
+import com.itbatis.utils.Configuration;
+import com.itbatis.utils.Connections;
+import com.itbatis.utils.MappedStatement;
 import com.itbatis.utils.ParameterUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,6 +26,30 @@ public class DefaultExecutor implements Executor {
     @Autowired
     public DefaultExecutor(Configuration configuration) {
         this.configuration = configuration;
+    }
+
+    @Override
+    public int update(MappedStatement statement, Object[] params) {
+        Connection connection = Connections.getConnection(configuration);
+        PreparedStatement preparedStatement = null;
+        int result = -1;
+        try {
+            preparedStatement = connection.prepareStatement(statement.getSql());
+            handleParameter(preparedStatement, params);
+            result = preparedStatement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
     }
 
     @Override
