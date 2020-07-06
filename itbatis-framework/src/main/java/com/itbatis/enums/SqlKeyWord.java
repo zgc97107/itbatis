@@ -9,6 +9,7 @@ public enum SqlKeyWord {
     SELECT("SELECT "),
     UPDATE("UPDATE "),
     INSERT("INSERT INTO "),
+    DELETE("DELETE "),
     FROM(" FROM "),
     SET(" SET "),
     AND(" AND "),

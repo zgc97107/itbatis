@@ -63,11 +63,11 @@ public class Test {
     public void bastMapperTest(){
         Student user = new Student();
         user.setId(3);
-        System.out.println(studentMapper.selectOne(user));
-        user.setName("insert test");
-        studentMapper.updateById(user);
-        studentMapper.save(user);
-        user.setCardNum("1");
-        System.out.println(studentMapper.selectList(user));
+        System.out.println(studentMapper.delete(user));
+//        user.setName("insert test");
+//        studentMapper.updateById(user);
+//        studentMapper.save(user);
+//        user.setCardNum("1");
+//        System.out.println(studentMapper.selectList(user));
     }
 }

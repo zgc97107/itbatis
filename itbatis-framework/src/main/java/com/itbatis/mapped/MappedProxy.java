@@ -28,6 +28,7 @@ public class MappedProxy implements InvocationHandler {
         BASE_METHODS.add("selectList");
         BASE_METHODS.add("updateById");
         BASE_METHODS.add("save");
+        BASE_METHODS.add("delete");
     }
 
     private SqlSession sqlSession;
@@ -44,7 +45,7 @@ public class MappedProxy implements InvocationHandler {
         //处理baseMapper方法
         String sql = mappedStatement.getSql();
         if (BASE_METHODS.contains(sql)) {
-            handlerSql(mappedStatement, args[0]);
+            handleSql(mappedStatement, args[0]);
         }
         // update语句
         if (mappedStatement.getSelectType().equals(SqlKeyWord.UPDATE)) {
@@ -58,7 +59,7 @@ public class MappedProxy implements InvocationHandler {
         }
     }
 
-    public void handlerSql(MappedStatement mappedStatement, Object param) {
+    public void handleSql(MappedStatement mappedStatement, Object param) {
         try {
             String method = mappedStatement.getSql();
             String sql = null;
@@ -81,6 +82,27 @@ public class MappedProxy implements InvocationHandler {
             }
             tableIdField.setAccessible(true);
             switch (method) {
+                case "delete":
+                    List<String> deleteConditions = new LinkedList<>();
+                    for (Field field : entityClass.getDeclaredFields()) {
+                        field.setAccessible(true);
+                        if (field.get(param) != null) {
+                            deleteConditions.add(ParameterUtil.humpToLine(field.getName())
+                                    + SqlKeyWord.EQ.value()
+                                    + "'"
+                                    + field.get(param).toString()
+                                    + "'");
+                        }
+                    }
+                    sql = SqlKeyWord.DELETE.value()
+                            + SqlKeyWord.FROM.value()
+                            + tableName
+                            + SqlKeyWord.WHERE.value()
+                            + String.join(" ,", deleteConditions);
+                    mappedStatement.setSql(sql);
+                    mappedStatement.setSelectType(SqlKeyWord.UPDATE);
+                    mappedStatement.setResultType(param.getClass().getName());
+                    break;
                 case "selectOne":
                     sql = SqlKeyWord.SELECT.value()
                             + "*"
