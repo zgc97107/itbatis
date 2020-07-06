@@ -28,7 +28,7 @@ public class MappedProxyRegistry implements BeanDefinitionRegistryPostProcessor,
 
     private String mapperLocation;
 
-    private Set<Class<?>> mapperInterfaces = new HashSet<>();
+    private List<Class<?>> mapperInterfaces;
 
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
@@ -67,14 +67,14 @@ public class MappedProxyRegistry implements BeanDefinitionRegistryPostProcessor,
      * 创建MappedStatement对象
      */
     private void loadMapperInfo() {
-        List<Class<?>> classes = LoadClass.getClasses(mapperLocation);
-        List<Class<?>> superClasses = classes.stream().map(Class::getInterfaces)
+        mapperInterfaces = LoadClass.getClasses(mapperLocation);
+        Set<Class<?>> superClasses = mapperInterfaces.stream().map(Class::getInterfaces)
                 .filter(Objects::nonNull)
                 .flatMap(Arrays::stream)
-                .collect(Collectors.toList());
-        classes.addAll(superClasses);
+                .collect(Collectors.toSet());
+        mapperInterfaces.addAll(superClasses);
         //将方法转为MappedStatement
-        classes.stream()
+        mapperInterfaces.stream()
                 //获取所有方法
                 .map(Class::getDeclaredMethods)
                 .flatMap(Arrays::stream)
@@ -91,20 +91,17 @@ public class MappedProxyRegistry implements BeanDefinitionRegistryPostProcessor,
                     //处理baseMapper方法
                     if (MappedProxy.BASE_METHODS.contains(method.getName())) {
                         String sql = method.getName();
-                        mapperInterfaces.add(mapperClass);
                         return new MappedStatement(namespace, sourceId, null, typeName, sql);
                     }
 
                     Select select = method.getAnnotation(Select.class);
                     if (select != null) {
                         String sql = select.value();
-                        mapperInterfaces.add(mapperClass);
                         return new MappedStatement(namespace, sourceId, SqlKeyWord.SELECT, typeName, sql);
                     }
                     Update update = method.getAnnotation(Update.class);
                     if (update != null) {
                         String sql = update.value();
-                        mapperInterfaces.add(mapperClass);
                         return new MappedStatement(namespace, sourceId, SqlKeyWord.UPDATE, typeName, sql);
                     }
                     return null;

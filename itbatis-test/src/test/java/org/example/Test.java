@@ -3,6 +3,7 @@ package org.example;
 import com.itbatis.wrapper.UpdateWrapper;
 import org.example.bean.Student;
 import org.example.bean.User;
+import org.example.mapper.StudentMapper;
 import org.example.mapper.UserMapper;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,5 +54,20 @@ public class Test {
 //        System.out.println(studentWrapper.select(Student.class).eq(Student::getId, "1").one());
         int update = new UpdateWrapper<Student>().update(Student.class).set(Student::getCardNum,"12312321").set(Student::getName, "update").eq(Student::getId, "1").execute();
         System.out.println(update);
+    }
+
+    @Autowired
+    private StudentMapper studentMapper;
+
+    @org.junit.Test
+    public void bastMapperTest(){
+        Student user = new Student();
+        user.setId(3);
+        System.out.println(studentMapper.selectOne(user));
+        user.setName("insert test");
+        studentMapper.updateById(user);
+        studentMapper.save(user);
+        user.setCardNum("1");
+        System.out.println(studentMapper.selectList(user));
     }
 }

@@ -1,6 +1,5 @@
 package com.itbatis.mapped;
 
-import com.itbatis.sqlsession.SqlSession;
 import org.springframework.beans.factory.FactoryBean;
 
 import java.util.HashMap;
@@ -14,8 +13,6 @@ import java.util.Map;
 public class MappedProxyFactory<T> implements FactoryBean<T> {
 
     private Class<T> interfaceClass;
-
-    private SqlSession sqlSession;
 
     public static Map<Class<?>, MappedProxyCreator<?>> mappedCache = new HashMap<>();
 
