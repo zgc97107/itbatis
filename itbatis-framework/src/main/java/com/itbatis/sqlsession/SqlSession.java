@@ -14,6 +14,4 @@ public interface SqlSession {
     <T> List<T> selectList(MappedStatement statement, Object... params);
 
     int update(MappedStatement statement,Object... params);
-
-    <T> T getMapper(Class<T> type);
 }

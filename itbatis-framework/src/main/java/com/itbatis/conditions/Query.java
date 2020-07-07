@@ -1,7 +1,5 @@
 package com.itbatis.conditions;
 
-import com.itbatis.SFunction;
-
 import java.util.List;
 
 /**

@@ -1,6 +1,6 @@
 package com.itbatis.wrapper;
 
-import com.itbatis.SFunction;
+import com.itbatis.conditions.SFunction;
 import com.itbatis.conditions.Condition;
 import com.itbatis.utils.MappedStatement;
 import com.itbatis.enums.SqlKeyWord;
@@ -69,7 +69,6 @@ public abstract class AbstractWrapper<Children, R> implements Condition<Children
         return typeThis;
     }
 
-
     protected MappedStatement getMappedStatement() {
         MappedStatement mappedStatement = new MappedStatement();
         mappedStatement.setSql(createSql());
@@ -84,5 +83,4 @@ public abstract class AbstractWrapper<Children, R> implements Condition<Children
         }
         return "";
     }
-
 }

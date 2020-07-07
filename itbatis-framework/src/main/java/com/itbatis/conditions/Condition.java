@@ -1,7 +1,5 @@
 package com.itbatis.conditions;
 
-import com.itbatis.SFunction;
-
 /**
  * @author zgc
  * @since 2020/7/3

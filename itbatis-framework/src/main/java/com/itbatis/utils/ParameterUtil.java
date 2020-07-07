@@ -1,6 +1,6 @@
 package com.itbatis.utils;
 
-import com.itbatis.SFunction;
+import com.itbatis.conditions.SFunction;
 import com.itbatis.annotation.TableField;
 import com.itbatis.annotation.TableName;
 

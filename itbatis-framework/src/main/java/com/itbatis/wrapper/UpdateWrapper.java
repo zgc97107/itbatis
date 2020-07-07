@@ -1,6 +1,6 @@
 package com.itbatis.wrapper;
 
-import com.itbatis.SFunction;
+import com.itbatis.conditions.SFunction;
 import com.itbatis.conditions.Update;
 import com.itbatis.enums.SqlKeyWord;
 import com.itbatis.executor.Executor;
@@ -46,7 +46,7 @@ public class UpdateWrapper<R> extends AbstractWrapper<UpdateWrapper<R>, R> imple
     }
 
     @Override
-    public UpdateWrapper<R> set(SFunction<R,?> function, String value) {
+    public UpdateWrapper<R> set(SFunction<R, ?> function, String value) {
         set.add(ParameterUtil.getFieldName(function)
                 + SqlKeyWord.EQ.value()
                 + "'" + value + "'");

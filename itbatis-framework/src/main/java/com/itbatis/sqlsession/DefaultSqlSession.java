@@ -46,18 +46,4 @@ public class DefaultSqlSession implements SqlSession {
     public int update(MappedStatement statement, Object... params) {
         return executor.update(statement, params);
     }
-
-    /**
-     * 创建mapper接口代理
-     *
-     * @param mapperType
-     * @param <T>
-     * @return
-     */
-    @Override
-    public <T> T getMapper(Class<T> mapperType) {
-        MappedProxy proxy = new MappedProxy();
-        return (T) Proxy.newProxyInstance(this.getClass().getClassLoader(),
-                new Class[]{mapperType}, proxy);
-    }
 }

@@ -1,6 +1,6 @@
 package com.itbatis.wrapper;
 
-import com.itbatis.SFunction;
+import com.itbatis.conditions.SFunction;
 import com.itbatis.conditions.Query;
 import com.itbatis.enums.SqlKeyWord;
 import com.itbatis.executor.Executor;

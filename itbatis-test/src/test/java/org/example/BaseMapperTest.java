@@ -28,7 +28,7 @@ public class BaseMapperTest {
     @Test
     public void saveTest() {
         Student user = new Student()
-                .setName("testUser")
+                .setName("testUser2")
                 .setCardNum("12345678");
         studentMapper.save(user);
     }
@@ -43,7 +43,7 @@ public class BaseMapperTest {
         Student user = new Student()
                 .setName("testUser")
                 .setCardNum("123456798")
-                .setId(1);
+                .setId(2);
         studentMapper.updateById(user);
     }
 
@@ -69,7 +69,7 @@ public class BaseMapperTest {
      */
     @Test
     public void deleteTest() {
-        Student user = new Student().setId(1);
+        Student user = new Student().setId(7);
         studentMapper.delete(user);
     }
 }

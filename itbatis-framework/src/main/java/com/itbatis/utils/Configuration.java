@@ -60,6 +60,10 @@ public class Configuration {
         return statementMap;
     }
 
+    public static void putToStatementMap(MappedStatement statement){
+        statementMap.put(statement.getSourceId(), statement);
+    }
+
     public static void setStatementMap(Map<String, MappedStatement> statementMap) {
         Configuration.statementMap = statementMap;
     }
