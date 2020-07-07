@@ -81,17 +81,22 @@ public class MappedProxyRegistry implements BeanDefinitionRegistryPostProcessor,
                 .map(method -> {
                     String id = method.getName();
                     String typeName = method.getGenericReturnType().getTypeName();
+
+                    //如果返回值为List<?>形式，则取?作为返回类型
                     if (typeName.contains("<")) {
                         typeName = typeName.substring(typeName.indexOf("<") + 1, typeName.indexOf(">"));
-                        typeName = "java.util.Map".equals(typeName) ? "java.util.HashMap" : typeName;
                     }
+
+                    //如果为Map类型则替换为HashMap
+                    typeName = "java.util.Map".equals(typeName) ? "java.util.HashMap" : typeName;
+
                     Class<?> mapperClass = method.getDeclaringClass();
                     String namespace = mapperClass.getName();
                     String sourceId = namespace + "." + id;
                     //处理baseMapper方法
-                    if (MappedProxy.BASE_METHODS.contains(method.getName())) {
+                    if (MappedProxy.BASE_METHODS.contains(sourceId)) {
                         String sql = method.getName();
-                        return new MappedStatement(namespace, sourceId, null, typeName, sql);
+                        return new MappedStatement(namespace, sourceId, null, typeName, sourceId);
                     }
 
                     Select select = method.getAnnotation(Select.class);
@@ -99,11 +104,13 @@ public class MappedProxyRegistry implements BeanDefinitionRegistryPostProcessor,
                         String sql = select.value();
                         return new MappedStatement(namespace, sourceId, SqlKeyWord.SELECT, typeName, sql);
                     }
+
                     Update update = method.getAnnotation(Update.class);
                     if (update != null) {
                         String sql = update.value();
                         return new MappedStatement(namespace, sourceId, SqlKeyWord.UPDATE, typeName, sql);
                     }
+
                     return null;
                 })
                 .filter(Objects::nonNull)

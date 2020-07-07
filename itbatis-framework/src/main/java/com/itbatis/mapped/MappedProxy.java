@@ -24,11 +24,11 @@ public class MappedProxy implements InvocationHandler {
     public static final Set<String> BASE_METHODS = new HashSet<>(3);
 
     static {
-        BASE_METHODS.add("selectOne");
-        BASE_METHODS.add("selectList");
-        BASE_METHODS.add("updateById");
-        BASE_METHODS.add("save");
-        BASE_METHODS.add("delete");
+        BASE_METHODS.add("com.itbatis.base.BaseMapper.selectOne");
+        BASE_METHODS.add("com.itbatis.base.BaseMapper.selectList");
+        BASE_METHODS.add("com.itbatis.base.BaseMapper.updateById");
+        BASE_METHODS.add("com.itbatis.base.BaseMapper.save");
+        BASE_METHODS.add("com.itbatis.base.BaseMapper.delete");
     }
 
     private SqlSession sqlSession;
@@ -82,7 +82,7 @@ public class MappedProxy implements InvocationHandler {
             }
             tableIdField.setAccessible(true);
             switch (method) {
-                case "delete":
+                case "com.itbatis.base.BaseMapper.delete":
                     List<String> deleteConditions = new LinkedList<>();
                     for (Field field : entityClass.getDeclaredFields()) {
                         field.setAccessible(true);
@@ -103,22 +103,8 @@ public class MappedProxy implements InvocationHandler {
                     mappedStatement.setSelectType(SqlKeyWord.UPDATE);
                     mappedStatement.setResultType(param.getClass().getName());
                     break;
-                case "selectOne":
-                    sql = SqlKeyWord.SELECT.value()
-                            + "*"
-                            + SqlKeyWord.FROM.value()
-                            + tableName
-                            + SqlKeyWord.WHERE.value()
-                            + tableId
-                            + SqlKeyWord.EQ.value()
-                            + "'"
-                            + tableIdField.get(param).toString()
-                            + "'";
-                    mappedStatement.setSql(sql);
-                    mappedStatement.setSelectType(SqlKeyWord.SELECT);
-                    mappedStatement.setResultType(param.getClass().getName());
-                    break;
-                case "selectList":
+                case "com.itbatis.base.BaseMapper.selectOne":
+                case "com.itbatis.base.BaseMapper.selectList":
                     List<String> conditions = new LinkedList<>();
                     for (Field field : entityClass.getDeclaredFields()) {
                         field.setAccessible(true);
@@ -134,12 +120,12 @@ public class MappedProxy implements InvocationHandler {
                             + SqlKeyWord.FROM.value()
                             + tableName
                             + SqlKeyWord.WHERE.value()
-                            + String.join(" ,", conditions);
+                            + String.join(SqlKeyWord.AND.value(), conditions);
                     mappedStatement.setSql(sql);
                     mappedStatement.setSelectType(SqlKeyWord.SELECT);
                     mappedStatement.setResultType(param.getClass().getName());
                     break;
-                case "updateById":
+                case "com.itbatis.base.BaseMapper.updateById":
                     List<String> updateConditions = new LinkedList<>();
                     for (Field field : entityClass.getDeclaredFields()) {
                         if (field.getAnnotation(TableId.class) == null) {
@@ -167,7 +153,7 @@ public class MappedProxy implements InvocationHandler {
                     mappedStatement.setSql(sql);
                     mappedStatement.setSelectType(SqlKeyWord.UPDATE);
                     break;
-                case "save":
+                case "com.itbatis.base.BaseMapper.save":
                     List<String> fieldConditions = new LinkedList<>();
                     List<String> valuesConditions = new LinkedList<>();
                     for (Field field : entityClass.getDeclaredFields()) {

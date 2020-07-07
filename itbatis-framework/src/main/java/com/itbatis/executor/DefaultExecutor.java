@@ -4,6 +4,8 @@ import com.itbatis.utils.Configuration;
 import com.itbatis.utils.Connections;
 import com.itbatis.utils.MappedStatement;
 import com.itbatis.utils.ParameterUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +23,9 @@ import java.util.Map;
 @Component
 public class DefaultExecutor implements Executor {
 
+    private final Logger LOG = LoggerFactory.getLogger(DefaultExecutor.class);
+
+
     private Configuration configuration;
 
     @Autowired
@@ -36,6 +41,7 @@ public class DefaultExecutor implements Executor {
         try {
             preparedStatement = connection.prepareStatement(statement.getSql());
             handleParameter(preparedStatement, params);
+            LOG.info(preparedStatement.toString());
             result = preparedStatement.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -61,6 +67,7 @@ public class DefaultExecutor implements Executor {
         try {
             preparedStatement = connection.prepareStatement(statement.getSql());
             handleParameter(preparedStatement, params);
+            LOG.info(preparedStatement.toString());
             resultSet = preparedStatement.executeQuery();
             handleResult(resultSet, resultObjs, statement.getResultType());
         } catch (Exception e) {
