@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class User {
-    @TableId
+    @TableId("id")
     private Long id;
     private String username;
     private String password;

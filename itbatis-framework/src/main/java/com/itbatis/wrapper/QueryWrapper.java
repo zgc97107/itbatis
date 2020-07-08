@@ -1,7 +1,7 @@
 package com.itbatis.wrapper;
 
-import com.itbatis.conditions.SFunction;
 import com.itbatis.conditions.Query;
+import com.itbatis.conditions.SFunction;
 import com.itbatis.enums.SqlKeyWord;
 import com.itbatis.executor.Executor;
 import com.itbatis.utils.ParameterUtil;
@@ -47,7 +47,8 @@ public class QueryWrapper<R> extends AbstractWrapper<QueryWrapper<R>, R> impleme
 
     @Override
     public R one() {
-        return list().get(0);
+        List<R> results = list();
+        return results.size() > 0 ? results.get(0) : null;
     }
 
     @Override

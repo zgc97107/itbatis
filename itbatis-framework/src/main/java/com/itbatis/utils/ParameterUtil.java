@@ -1,8 +1,9 @@
 package com.itbatis.utils;
 
-import com.itbatis.conditions.SFunction;
-import com.itbatis.annotation.TableField;
+import com.itbatis.annotation.TableId;
 import com.itbatis.annotation.TableName;
+import com.itbatis.conditions.SFunction;
+import org.springframework.util.StringUtils;
 
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Field;
@@ -102,16 +103,15 @@ public class ParameterUtil {
         fieldName = fieldName.replaceFirst(fieldName.charAt(0) + "", (fieldName.charAt(0) + "").toLowerCase());
         Field field;
         try {
-            field = Class.forName(serializedLambda.getImplClass().replace("/", ".")).getDeclaredField(fieldName);
+            String className = serializedLambda.getImplClass().replace("/", ".");
+            field = Class.forName(className).getDeclaredField(fieldName);
         } catch (ClassNotFoundException | NoSuchFieldException e) {
             throw new RuntimeException(e);
         }
-
-        // TODO 此处失效，取不到TableField
         // 从field取出字段名，可以根据实际情况调整
-        TableField tableField = field.getAnnotation(TableField.class);
-        if (tableField != null && tableField.value().length() > 0) {
-            return tableField.value();
+        TableId tableId = field.getAnnotation(TableId.class);
+        if (tableId != null && !StringUtils.isEmpty(tableId.value())) {
+            return tableId.value();
         } else {
             return fieldName.replaceAll("[A-Z]", "_$0");
         }
