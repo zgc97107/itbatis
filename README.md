@@ -9,6 +9,7 @@
 - 支持数据库字段映射至实体类，映射时会将数据库字段中的下划线转为驼峰。
 - 提供TableId、TableField、TableName注解，自定义主键名、字段名、表名。
 - 提供通用mapper，条件构造器，及注解方式自定义Sql进行增删改查操作。
+- 支持hikari、druid连接池
 
 
 #### 软件架构
@@ -24,11 +25,14 @@ application.yml相关配置
 it-batis:
   mapper-location: org.example.mapper
 #数据库信息
-datasource:
-  driver:  com.mysql.jdbc.Driver
-  url: jdbc:mysql://localhost:3306/test
-  username: root
-  password: root
+spring:
+  datasource:
+    url: jdbc:mysql:///test?useUnicode=true&characterEncoding=utf-8&useSSL=false&autoReconnect=true&serverTimezone=Asia/Shanghai
+    type: com.zaxxer.hikari.HikariDataSource
+    #type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: root
 ```
 
 #### 使用示例

@@ -10,6 +10,6 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @ComponentScan("com.itbatis")
-public class ItBatisConfig {
+public class ItBatisFrameworkConfig {
 
 }
