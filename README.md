@@ -6,9 +6,9 @@
 #### 可用功能
 
 - 支持扫描并创建mapper接口的代理对象，已整合到spring的beanFactory，支持自动注入。
-- 支持数据库字段映射至实体类，支持下划线命名转为驼峰命名。
-- 提供TableId、TableField、TableName注解，自定义主键字段名、普通字段名、表名（某些情况下会失效）。
-- 提供BaseMapper、自定义Sql、Wrapper方式进行增删改查操作。
+- 支持数据库字段映射至实体类，映射时会将数据库字段中的下划线转为驼峰。
+- 提供TableId、TableField、TableName注解，自定义主键名、字段名、表名。
+- 提供通用mapper，条件构造器，及注解方式自定义Sql进行增删改查操作。
 
 
 #### 软件架构
@@ -31,9 +31,9 @@ datasource:
   password: root
 ```
 
-#### 使用说明
+#### 使用示例
 
-- baseMapper的使用
+- 通用mapper
 
   实体类
 
@@ -119,7 +119,7 @@ datasource:
   }
   ```
 
-- wrapper的使用
+- 条件构造器
 
   示例
 
@@ -155,7 +155,7 @@ datasource:
   }
   ```
 
-- 自定义语句
+- 自定义SQL
 
   ```java
   public interface UserMapper extends BaseMapper<User> {
