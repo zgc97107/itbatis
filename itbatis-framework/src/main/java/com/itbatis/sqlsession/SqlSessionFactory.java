@@ -1,6 +1,5 @@
 package com.itbatis.sqlsession;
 
-import com.itbatis.utils.Configuration;
 import com.itbatis.executor.Executor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -13,18 +12,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class SqlSessionFactory{
 
-    private Configuration configuration;
-
     private Executor executor;
 
     @Autowired
-    public SqlSessionFactory(Configuration configuration, Executor executor) {
-        this.configuration = configuration;
+    public SqlSessionFactory(Executor executor) {
         this.executor = executor;
     }
 
     @Bean
     public SqlSession sqlSession() {
-        return new DefaultSqlSession(configuration, executor);
+        return new DefaultSqlSession(executor);
     }
 }

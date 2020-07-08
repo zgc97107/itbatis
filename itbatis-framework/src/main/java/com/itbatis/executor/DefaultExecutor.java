@@ -1,7 +1,6 @@
 package com.itbatis.executor;
 
-import com.itbatis.utils.Configuration;
-import com.itbatis.utils.Connections;
+import com.itbatis.datasource.DataSourcesProxy;
 import com.itbatis.utils.MappedStatement;
 import com.itbatis.utils.ParameterUtil;
 import org.slf4j.Logger;
@@ -25,17 +24,16 @@ public class DefaultExecutor implements Executor {
 
     private final Logger LOG = LoggerFactory.getLogger(DefaultExecutor.class);
 
-
-    private Configuration configuration;
-
     @Autowired
-    public DefaultExecutor(Configuration configuration) {
-        this.configuration = configuration;
+    public DefaultExecutor(DataSourcesProxy dataSourcesProxy) {
+        this.dataSourcesProxy = dataSourcesProxy;
     }
+
+    private DataSourcesProxy dataSourcesProxy;
 
     @Override
     public int update(MappedStatement statement, Object[] params) {
-        Connection connection = Connections.getConnection(configuration);
+        Connection connection = dataSourcesProxy.getConnection();
         PreparedStatement preparedStatement = null;
         int result = -1;
         try {
@@ -60,7 +58,7 @@ public class DefaultExecutor implements Executor {
 
     @Override
     public <T> List<T> query(MappedStatement statement, Object[] params) {
-        Connection connection = Connections.getConnection(configuration);
+        Connection connection = dataSourcesProxy.getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         List<T> resultObjs = new LinkedList<>();

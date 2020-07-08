@@ -23,11 +23,11 @@ public class WrapperTest {
     public void queryWrapper() throws NoSuchMethodException, ClassNotFoundException {
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         //查询user的id为1所有字段，返回结果为单条
-        User user = wrapper.select(User.class).eq(User::getId, "1").one();
+        User user = wrapper.select(User.class).eq(User::getId, "6").one();
         System.out.println(user);
         wrapper = new QueryWrapper<>();
         //查询user的id小于3的username字段，返回结果为多条
-        List<User> list = wrapper.select(User.class,User::getUsername).lt(User::getId, "3").list();
+        List<User> list = wrapper.select(User.class,User::getUsername).lt(User::getId, "6").list();
         System.out.println(list);
     }
 

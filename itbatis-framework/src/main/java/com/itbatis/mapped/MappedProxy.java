@@ -3,7 +3,6 @@ package com.itbatis.mapped;
 import com.itbatis.base.BaseMapperStatementHandler;
 import com.itbatis.enums.SqlKeyWord;
 import com.itbatis.sqlsession.SqlSession;
-import com.itbatis.utils.Configuration;
 import com.itbatis.utils.MappedStatement;
 import com.itbatis.utils.SpringApplicationHolder;
 
@@ -30,7 +29,7 @@ public class MappedProxy implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         Class<?> returnType = method.getReturnType();
         String statement = method.getDeclaringClass().getName() + "." + method.getName();
-        MappedStatement mappedStatement = Configuration.getStatementMap().get(statement);
+        MappedStatement mappedStatement = MappedProxyRegistry.getStatementMap().get(statement);
         //处理baseMapper方法
         String sql = mappedStatement.getSql();
         if (BaseMapperStatementHandler.baseStatementHandlerMapping.containsKey(sql)) {

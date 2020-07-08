@@ -1,7 +1,9 @@
 it-batis:
   mapper-location: org.example.mapper
-datasource:
-  driver:  com.mysql.jdbc.Driver
-  url: jdbc:mysql://localhost:3306/test
-  username: root
-  password: zhao19971107A
+spring:
+  datasource:
+    url: jdbc:mysql:///test?useUnicode=true&characterEncoding=utf-8&useSSL=false&autoReconnect=true&serverTimezone=Asia/Shanghai
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: zhao19971107A

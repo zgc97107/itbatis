@@ -1,11 +1,8 @@
 package com.itbatis.sqlsession;
 
-import com.itbatis.utils.Configuration;
-import com.itbatis.utils.MappedStatement;
 import com.itbatis.executor.Executor;
-import com.itbatis.mapped.MappedProxy;
+import com.itbatis.utils.MappedStatement;
 
-import java.lang.reflect.Proxy;
 import java.util.List;
 
 /**
@@ -16,11 +13,9 @@ import java.util.List;
  */
 public class DefaultSqlSession implements SqlSession {
 
-    private Configuration configuration;
     private final Executor executor;
 
-    public DefaultSqlSession(Configuration configuration, Executor executor) {
-        this.configuration = configuration;
+    public DefaultSqlSession(Executor executor) {
         this.executor = executor;
     }
 

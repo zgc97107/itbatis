@@ -4,7 +4,6 @@ import com.itbatis.annotation.Select;
 import com.itbatis.annotation.Update;
 import com.itbatis.base.BaseMapperStatementHandler;
 import com.itbatis.enums.SqlKeyWord;
-import com.itbatis.utils.Configuration;
 import com.itbatis.utils.LoadClass;
 import com.itbatis.utils.MappedStatement;
 import com.itbatis.utils.ParameterUtil;
@@ -16,10 +15,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -33,6 +29,8 @@ public class MappedProxyRegistry implements BeanDefinitionRegistryPostProcessor,
     private String mapperLocation;
 
     private List<Class<?>> mapperInterfaces;
+
+    private static Map<String, MappedStatement> statementMap = new HashMap<>();
 
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
@@ -84,17 +82,18 @@ public class MappedProxyRegistry implements BeanDefinitionRegistryPostProcessor,
                 .flatMap(Arrays::stream)
                 .map(this::createMappedStatement)
                 .filter(Objects::nonNull)
-                .forEach(Configuration::putToStatementMap);
+                .forEach(MappedProxyRegistry::putToStatementMap);
         //将bean创建方法封装，并放入map中
         mapperInterfaces.forEach(MappedProxyFactory::putMappedCreator);
     }
 
     /**
      * 创建MappedStatement对象
+     *
      * @param method
      * @return
      */
-    private MappedStatement createMappedStatement(Method method){
+    private MappedStatement createMappedStatement(Method method) {
         String id = method.getName();
         String typeName = method.getGenericReturnType().getTypeName();
 
@@ -126,5 +125,17 @@ public class MappedProxyRegistry implements BeanDefinitionRegistryPostProcessor,
             return new MappedStatement(namespace, sourceId, SqlKeyWord.UPDATE, typeName, sql);
         }
         return null;
+    }
+
+    public static Map<String, MappedStatement> getStatementMap() {
+        return statementMap;
+    }
+
+    public static void putToStatementMap(MappedStatement statement) {
+        statementMap.put(statement.getSourceId(), statement);
+    }
+
+    public static void setStatementMap(Map<String, MappedStatement> statementMap) {
+        statementMap = statementMap;
     }
 }
