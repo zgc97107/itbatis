@@ -9,14 +9,30 @@ import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * @author zgc
  * @since 2020/7/1
  */
 public class ParameterUtil {
+    /**
+     * 生成缓存键，规则为sql+参数
+     *
+     * @param mappedStatement
+     * @param args
+     * @return
+     */
+    public static String generatorCacheKey(MappedStatement mappedStatement, Object[] args) {
+        String argStr = args == null ? "" :
+                Arrays.stream(args)
+                        .map(Object::toString)
+                        .collect(Collectors.joining(","));
+        return mappedStatement.getSql() + ":" + argStr;
+    }
 
     /**
      * 根据Class名获取tableName

@@ -3,12 +3,15 @@ package com.itbatis.mapped;
 import com.itbatis.base.BaseMapperStatementHandler;
 import com.itbatis.enums.SqlKeyWord;
 import com.itbatis.sqlsession.SqlSession;
+import com.itbatis.sqlsession.SqlSessionFactory;
 import com.itbatis.utils.MappedStatement;
+import com.itbatis.utils.ParameterUtil;
 import com.itbatis.utils.SpringApplicationHolder;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author zgc
@@ -17,12 +20,14 @@ import java.util.Collection;
  */
 public class MappedProxy implements InvocationHandler {
 
-    private SqlSession sqlSession;
+    private SqlSessionFactory sqlSessionFactory;
     private BaseMapperStatementHandler baseMapperStatementParser;
+
+    private ConcurrentHashMap<String, Object> resultCache = new ConcurrentHashMap<>();
 
     public MappedProxy() {
         this.baseMapperStatementParser = SpringApplicationHolder.applicationContext.getBean(BaseMapperStatementHandler.class);
-        this.sqlSession = SpringApplicationHolder.applicationContext.getBean(SqlSession.class);
+        this.sqlSessionFactory = SpringApplicationHolder.applicationContext.getBean(SqlSessionFactory.class);
     }
 
     @Override
@@ -30,20 +35,32 @@ public class MappedProxy implements InvocationHandler {
         Class<?> returnType = method.getReturnType();
         String statement = method.getDeclaringClass().getName() + "." + method.getName();
         MappedStatement mappedStatement = MappedProxyRegistry.getStatementMap().get(statement);
-        //处理baseMapper方法
+        // 处理baseMapper方法
         String sql = mappedStatement.getSql();
         if (BaseMapperStatementHandler.baseStatementHandlerMapping.containsKey(sql)) {
-            baseMapperStatementParser.parse(mappedStatement,args[0]);
+            baseMapperStatementParser.parse(mappedStatement, args[0]);
         }
+        SqlSession sqlSession = sqlSessionFactory.sqlSession();
         // update语句
         if (mappedStatement.getSelectType().equals(SqlKeyWord.UPDATE)) {
+            // 清空缓存
+            resultCache.clear();
             return sqlSession.update(mappedStatement, args);
             // select语句，返回多条查询结果
-        } else if (Collection.class.isAssignableFrom(returnType)) {
-            return sqlSession.selectList(mappedStatement, args);
-            // select语句，返回单条查询结果
         } else {
-            return sqlSession.selectOne(mappedStatement, args);
+            String key = ParameterUtil.generatorCacheKey(mappedStatement, args);
+            // 从缓存中获取
+            if (resultCache.containsKey(key)) {
+                return resultCache.get(key);
+            }
+            Object result = Collection.class.isAssignableFrom(returnType) ?
+                    sqlSession.selectList(mappedStatement, args)
+                    : sqlSession.selectOne(mappedStatement, args);
+            // 放入缓存
+            if (result != null) {
+                resultCache.put(key, result);
+            }
+            return result;
         }
     }
 }

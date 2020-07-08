@@ -9,8 +9,6 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.List;
-
 /**
  * @author zgc
  * @since 2020/7/7
@@ -27,8 +25,10 @@ public class WrapperTest {
         System.out.println(user);
         wrapper = new QueryWrapper<>();
         //查询user的id小于3的username字段，返回结果为多条
-        List<User> list = wrapper.select(User.class,User::getUsername).lt(User::getId, "6").list();
-        System.out.println(list);
+        user = wrapper.select(User.class).eq(User::getId, "6").one();
+        System.out.println(user);
+//        List<User> list = wrapper.select(User.class,User::getUsername).lt(User::getId, "6").list();
+//        System.out.println(list);
     }
 
     @Test

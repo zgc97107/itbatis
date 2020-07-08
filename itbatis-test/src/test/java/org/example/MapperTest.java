@@ -21,8 +21,9 @@ public class MapperTest {
     public void testMapper() throws NoSuchMethodException, ClassNotFoundException {
 //        int result = mapper.save("saveTest", "123", "123");
 //        System.out.println(result);
-//        System.out.println(mapper.selectMapById(2L));
-        System.out.println(mapper.update("updateTest3", 4L));
+        System.out.println(mapper.selectMapById(6L));
+//        System.out.println(mapper.update("updateTest3", 4L));
+        System.out.println(mapper.selectMapById(6L));
 //        System.out.println(mapper.delete(2L));
     }
 }

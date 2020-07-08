@@ -13,6 +13,7 @@ import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author zgc
@@ -24,6 +25,8 @@ public class DefaultExecutor implements Executor {
 
     private final Logger LOG = LoggerFactory.getLogger(DefaultExecutor.class);
 
+    private ConcurrentHashMap<String, List> resultCache = new ConcurrentHashMap<>();
+
     @Autowired
     public DefaultExecutor(DataSourcesProxy dataSourcesProxy) {
         this.dataSourcesProxy = dataSourcesProxy;
@@ -33,6 +36,9 @@ public class DefaultExecutor implements Executor {
 
     @Override
     public int update(MappedStatement statement, Object[] params) {
+        // 清空缓存
+        resultCache.clear();
+
         Connection connection = dataSourcesProxy.getConnection();
         PreparedStatement preparedStatement = null;
         int result = -1;
@@ -58,6 +64,12 @@ public class DefaultExecutor implements Executor {
 
     @Override
     public <T> List<T> query(MappedStatement statement, Object[] params) {
+        //从缓存中获取
+        String cacheKey = ParameterUtil.generatorCacheKey(statement, params);
+        if (resultCache.containsKey(cacheKey)) {
+            return resultCache.get(cacheKey);
+        }
+
         Connection connection = dataSourcesProxy.getConnection();
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -83,6 +95,8 @@ public class DefaultExecutor implements Executor {
                 e.printStackTrace();
             }
         }
+        // 放入缓存
+        resultCache.put(cacheKey, resultObjs);
         return resultObjs;
     }
 

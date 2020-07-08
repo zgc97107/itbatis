@@ -2,7 +2,6 @@ package com.itbatis.sqlsession;
 
 import com.itbatis.executor.Executor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 /**
@@ -19,7 +18,6 @@ public class SqlSessionFactory{
         this.executor = executor;
     }
 
-    @Bean
     public SqlSession sqlSession() {
         return new DefaultSqlSession(executor);
     }
